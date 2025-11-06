@@ -1,0 +1,25 @@
+stages:
+  - build
+  - push
+
+variables:
+  IMAGE_NAME: testedoteste
+  IMAGE_TAG: 1.0.1
+
+build-image:
+  stage: build
+  tags:
+    - push
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG . 
+    - docker tag $IMAGE_NAME:$IMAGE_TAG $NEXUS_ITYHY_URL/teste/$IMAGE_NAME:$IMAGE_TAG
+  when: manual 
+
+push-image:
+  stage: push
+  tags:
+    - push
+  script:
+    - echo $NEXUS_PASSWORD | docker login $NEXUS_ITYHY_URL -u $NEXUS_USER --password-stdin
+    - docker push $NEXUS_ITYHY_URL/teste/$IMAGE_NAME:$IMAGE_TAG
+  when: manual
